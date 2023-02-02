@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Box, Button, FormControl, InputLabel, Input } from "@mui/material";
+import {
+  Box,
+  Button,
+  InputLabel,
+  Input,
+  Typography,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 export const Login = () => {
   const [form, setForm] = React.useState({
     email: "",
@@ -31,12 +38,12 @@ export const Login = () => {
   }, [passwords.pass1, passwords.pass2]);
 
   const submitHandoler = () => {
-
-  }
+    
+  };
   return (
     <Box>
-      <Box component="h2">ここはログイン</Box>
-      <form onSubmit={submitHandoler}>
+      <Typography component="h2">ここはログイン</Typography>
+      <Box component="form" onSubmit={submitHandoler}>
         <InputLabel htmlFor="my-email">メールアドレス</InputLabel>
         <Input onChange={emailChangeHandler} id="my-email" />
 
@@ -45,9 +52,16 @@ export const Login = () => {
 
         <InputLabel htmlFor="pass2">確認パスワード</InputLabel>
         <Input id="pass2" onChange={passwordChangeHandler} />
-      <Button variant="contained">ログイン</Button>
-      </form>
-
+        <Button variant="contained">ログイン</Button>
+        <Typography
+          variant="caption"
+          component={Link}
+          color="text.primary"
+          to="/signup"
+        >
+          アカウントを持っていない方
+        </Typography>
+      </Box>
     </Box>
   );
 };

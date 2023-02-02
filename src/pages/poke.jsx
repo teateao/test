@@ -6,8 +6,13 @@ import {
   InputLabel,
   Input,
   Grid,
+  Stack,
+  Paper,
+  TextField,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { FetchLoginmixin } from "../components/fetch";
 export const Poke = () => {
   const suuti = ["H", "A", "B", "C", "D", "S"];
   const [jissuti, setJisuuti] = React.useState({
@@ -42,135 +47,75 @@ export const Poke = () => {
     D: 31,
     S: 31,
   });
-  const changeBasenumHandoler = e => {
-    setBaseNum({
-      ...basenum,
-      [e.target.name]: e.target.value,
-    });
-    console.log("これはuseState内")
-    console.log(basenum)
-  };
-  const changeKotainumHandoler = e => {
-    setKotaiNum({
-      ...kotainum,
-      [e.target.value]: e.target.value,
-    });
-  };
-  const changeDoryokunumHandoler = e => {
-    setDoryokuNum({
-      ...doryokunum,
-      [e.target.name]: e.target.value,
-    });
+  const changeHandoler = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    switch (name) {
+      case "base":
+        setBaseNum(value);
+        break;
+      case "doryoku":
+        setDoryokuNum(value);
+        break;
+      case "kotai":
+        setKotaiNum(value);
+        break;
+    }
   };
 
   React.useEffect(() => {
-    console.log("useEffect動いてる");
-    // let e_obj = 0;
-    // console.log(e_obj);
-    // suuti.map(prev => {
-    //   console.log(prev);
-    //   if (prev === "H") {
-    //     e_obj += 55;
-    //   }
-    //   e_obj +=
-    //     Math.trunc(
-    //       Number(basenum[prev]) +
-    //         Number(kotainum[prev]) / 2 +
-    //         Number(doryokunum[prev]) / 8
-    //     ) + 5;
-    //   console.log(basenum[prev] + "　種族値");
-    //   console.log(kotainum[prev] + "　個体値");
-    //   console.log(doryokunum[prev] + "　努力値");
-    //   console.log(e_obj)
-    //   setJisuuti({
-    //     ...jissuti,
-    //     prev: [e_obj],
-    //   });
-    //   e_obj = 0;
-    // });
+    suuti.map(item => {
+      let e_obj = 0;
+      if (item === "H") {
+        e_obj += 55;
+      }
+      e_obj +=
+        Math.trunc(
+          Number(basenum[item]) +
+            Number(kotainum[item]) / 2 +
+            Number(doryokunum[item]) / 8
+        ) + 5;
+      setJisuuti(prev => ({
+        ...prev,
+        [item]: e_obj,
+      }));
+    });
   }, [doryokunum, basenum, kotainum]);
+  const clickHandoler = () => {
+    const poke = {
+      name: document.getElementById("poke_name"),
+      basenum: basenum,
+      kotainum: kotainum,
+      doryokunum: doryokunum,
+      body: document.getElementById("poke_body"),
+    };
+  };
+  const num = ["ステータス", "種族値", "個体値", "努力値", "実数値"];
 
   return (
-    <Grid container spacing={0.5} direction="row">
-      <InputLabel htmlFor="name">名前</InputLabel>
-      <Input id="name"></Input>
-      <Box>種族値</Box>
-      <ul>
-        {suuti.map((prev, idx) => {
-          return (
-            <li key={idx}>
-              <Grid md={5}>
-                <InputLabel htmlFor={prev}>{prev}</InputLabel>
-                <Input
-                  id={prev}
-                  name={prev}
-                  onChange={changeBasenumHandoler}
-                  type="number"
-                  value={basenum[prev]}
-                />
-              </Grid>
-            </li>
-          );
+    <Box>
+      <TextField id="poke_name" />
+      <Box container spacing={1} component="ul">
+        {num.map((item1, idx1) => {
+          <li key={idx1}>
+            <Stack direction="row" component="ul">
+              <li>{item1}</li>
+              {suuti.map((item2, idx2) => (
+                <li key={idx2}>
+                  <Grid xs={3}>
+                    <Input
+                      value={item2}
+                      // {item1==="ステータス"&&disabled}
+                    />
+                  </Grid>
+                </li>
+              ))}
+            </Stack>
+          </li>;
         })}
-      </ul>
-      <Box>個体値</Box>
-      <ul>
-        {suuti.map((prev, idx) => {
-          return (
-            <li key={idx}>
-              <Grid md={5} direction="row">
-                <InputLabel htmlFor={prev}>{prev}</InputLabel>
-                <Input
-                  id={prev}
-                  name={prev}
-                  onChange={changeKotainumHandoler}
-                  type="number"
-                  value={kotainum[prev]}
-                />
-              </Grid>
-            </li>
-          );
-        })}
-      </ul>
-      <Box>努力値</Box>
-      <ul>
-        {suuti.map((prev, idx) => {
-          return (
-            <li key={idx}>
-              <Grid md={5} direction="row">
-                <InputLabel htmlFor={prev}>{prev}</InputLabel>
-                <Input
-                  id={prev}
-                  name={prev}
-                  onChange={changeDoryokunumHandoler}
-                  type="number"
-                  value={doryokunum[prev]}
-                />
-              </Grid>
-            </li>
-          );
-        })}
-      </ul>
-      <div>
-        {suuti.map((prev, idx) => {
-          return <div key={idx}>{basenum[prev]}</div>;
-        })}
-      </div>
-      <div>
-        {suuti.map((prev, idx) => {
-          return <div key={idx}>{kotainum[prev]}</div>;
-        })}
-      </div>
-      <div>
-        {suuti.map((prev, idx) => {
-          return <div key={idx}>{doryokunum[prev]}</div>;
-        })}
-      </div>
-      <div>
-        {suuti.map((prev, idx) => {
-          return <div key={idx}>{jissuti[prev]}</div>;
-        })}
-      </div>
-    </Grid>
+      </Box>
+      <TextField id="poke_body" />
+      <Button onClick={clickHandoler}>保存</Button>
+    </Box>
   );
 };
